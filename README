@@ -1,0 +1,1 @@
+This is the full project designed to introduce high school students to basic web development. We developed a blogging website that supports multiple users, posts and comments. We used FASTapi for backend and jinja2 (and later Vue3) for frontend. 
