@@ -151,7 +151,7 @@ class Comment():
         if data:
             return list ( map(lambda x: Comment(x[0], x[1], x[2]), data) )
         else:
-            raise Exception('Invalid creator ID')
+            return []
         
     def insert_comment(text, post_id):
         global db_path

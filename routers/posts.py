@@ -2,11 +2,11 @@ from fastapi import APIRouter, Cookie, Form
 from fastapi.responses import JSONResponse
 from fastapi import Request
 from pydantic import BaseModel
-from ..db.models import User, BlogPost
+from db.models import User, BlogPost, Comment
 from typing import Annotated
 from fastapi.templating import Jinja2Templates
 
-templates = Jinja2Templates(directory="./radionica/templates")
+templates = Jinja2Templates(directory="./templates")
 
 router = APIRouter(
     prefix="/posts",
@@ -16,8 +16,9 @@ router = APIRouter(
 @router.get('/{post_id}')
 async def get_post(post_id, request: Request):
     post = BlogPost.fetch_by_id(post_id)
+    comments = Comment.fetch_by_post_id(post_id)
     #return post
-    return templates.TemplateResponse("blog.view.html", {"title": post.title, "body": post.body, "request": request})
+    return templates.TemplateResponse("blog.view.html", {"post_id": post_id, "title": post.title, "body": post.body, "request": request, "comments": comments})
 
 
 @router.put('/')
