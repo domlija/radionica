@@ -13,17 +13,17 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        Login
+                        Create post
                     </div>
                     <div class="card-body">
-                        <form method="post" action="/login">
+                        <form method="post" action="/posts">
                             <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" required>
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
                             </div>
                             <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
+                                <label for="body" class="form-label">Body</label>
+                                <textarea type="textarea" class="form-control" id="body" name="body" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Login</button>
                         </form>

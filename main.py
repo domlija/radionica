@@ -1,6 +1,8 @@
-from fastapi import Depends, FastAPI, Request
+from typing import Annotated
+from fastapi import Depends, FastAPI, Form, Request
+from db.models import User
 from routers import users, posts, comments
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 
 from fastapi.templating import Jinja2Templates
 
@@ -27,5 +29,41 @@ async def search_user(username: str = ''):
     if username == '':
         return RedirectResponse("/")
     return RedirectResponse("/users/" + username, status_code=302)
+
+
+@app.get('/signup')
+async def get_signup_page(request: Request):
+    logged = True if request.cookies.get('user_id') else False 
+    return templates.TemplateResponse("signup.view.html", context={"request": request, "logged": logged})
+
+@app.post('/signup')
+async def signup_user(username: Annotated[str, Form()], password: Annotated[str, Form()], passwordRepeat: Annotated[str, Form()]):
+    try:    
+        User.fetch_by_username(username)
+        return {"status": "username exists"}
+    except:
+        User.insert_user(username, password)
+        return {"status": "Sign up successful"}
+
+@app.get('/login')
+async def get_login_page(request: Request):
+    return templates.TemplateResponse("login.view.html", context={"request": request})   
+
+
+@app.post('/login')
+async def login_user(username: Annotated[str, Form()], password:Annotated[str, Form()]):
+    user_id = User.login_user(username, password)
+    if user_id == None:
+        return JSONResponse({"message": "failure"})
+    
+    res = RedirectResponse('/users/' + username, status_code=302)
+    res.set_cookie(key="user_id", value=str(user_id), secure=True, httponly=True)
+    return res
+
+@app.get('/logout')
+async def logout_user(req: Request):
+    res = RedirectResponse('/', status_code=302)
+    res.delete_cookie(key='user_id')
+    return res
 
 

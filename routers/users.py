@@ -16,15 +16,7 @@ router = APIRouter(
     tags=['users']
 )
 
-@router.get('/login')
-async def get_login_page(request: Request):
-    return templates.TemplateResponse("login.view.html", context={"request": request})   
 
-@router.get('/logout')
-async def logout_user(req: Request):
-    res = RedirectResponse('/', status_code=302)
-    res.delete_cookie(key='user_id')
-    return res
 
 @router.get('/{username}')
 async def get_user(username, req: Request):
@@ -61,25 +53,8 @@ async def get_user(username, req: Request):
 
        return {"message": e}
 
-@router.put('/')
-async def create_user(user: UserPy):
-    User.insert_user(user.username, user.password)
-    return user
 
-@router.post('/login')
-async def login_user(username: Annotated[str, Form()], password:Annotated[str, Form()]):
-    user_id = User.login_user(username, password)
-    if user_id == None:
-        return JSONResponse({"message": "failure"})
-    
-    res = RedirectResponse('/users/' + username, status_code=302)
-    res.set_cookie(key="user_id", value=str(user_id), secure=True, httponly=True)
-    return res
 
-@router.get('/logout')
-async def logout_user(req: Request):
-    res = RedirectResponse('/', status_code=302)
-    res.delete_cookie(key='user_id')
-    return res
+
 
  
