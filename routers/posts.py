@@ -20,35 +20,16 @@ async def get_create_post(req: Request):
     if not logged:
         return {"status": "not logged in!"}
 
-    return templates.TemplateResponse("createPost.view.html", context={"request": req,
-                                                                       "logged": logged})
+    
 
 @router.get('/{post_id}')
 async def get_post(post_id, request: Request):
-    post = BlogPost.fetch_by_id(post_id)
-    comments = Comment.fetch_by_post_id(post_id)
-    logged = True if request.cookies.get('user_id') else False
-    #return post
-    return templates.TemplateResponse("blog.view.html", {"post_id": post_id, 
-                                                         "title": post.title, 
-                                                         "body": post.body, 
-                                                         "request": request, 
-                                                         "comments": comments,
-                                                         "logged": logged})
+    
 
 
 @router.post('/')
 async def put_post(title: Annotated[str, Form()], body: Annotated[str, Form()], request: Request):
-    user_id = request.cookies.get("user_id")
-    if user_id == None:
-        return {"status": "failed"}
     
-    user = User.fetch_by_id(user_id)
-
-
-    BlogPost.insert_post(title, body, user_id)
-
-    return RedirectResponse("/users/" + user.username, status_code=302)
 
 @router.delete('/{post_id}')
 async def delete_post(post_id, req: Request):
