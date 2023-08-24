@@ -24,7 +24,7 @@ async def search_user(username: str = ''):
 
 
 @app.get('/signup')
-async def get_signup_page(request: Request):
+async def get_signup_page(request: Request): #hh
     
 
 @app.post('/signup')
